@@ -1,0 +1,4 @@
+beringela 10 1.99
+arroz 5 4.99
+peixe 2 9.99
+abacaxi 100 3.99
