@@ -41,8 +41,7 @@ def escreverArq(valores):
     try:
         with open("colecao.bin","wb") as arq:
             for num in valores:
-                bin = struct.pack('<i', num)
-                arq.write(bin)
+                arq.write(struct.pack('=i', num))
     except IOError:
         print("Erro no arquivo")
 
@@ -58,15 +57,13 @@ def bubblesortArq(): #Bubble Sort feito de 2 em 2 variaveis para não alocar lis
                 contaByte = byte * 2 #Começa com 2 read()
                 posicao = 0 #Define a posição do seek
                 while contaByte <= totalArq: #Enquanto houver pares de 1 em 1 posição faça  Ex.: (4 3 2 1) = 4 3, 3 2, 2 1
-                    arq.seek(posicao, 0)
-                    x = arq.read(byte)[0]
-                    y = arq.read(byte)[0]
+                    arq.seek(posicao, 0) #Volta na posição de inicio de while
+                    x = struct.unpack("=i",arq.read(byte))[0]
+                    y = struct.unpack("=i",arq.read(byte))[0]
                     if x > y: #Se não estiver ordenado
                         arq.seek(posicao,0)
-                        empacotary = struct.pack('<i', y)
-                        arq.write(empacotary)
-                        empacotarx = struct.pack('<i', x)
-                        arq.write(empacotarx)
+                        arq.write(struct.pack('=i', y))
+                        arq.write(struct.pack('=i', x))
                         ordenado = False
                     posicao += byte
                     contaByte += byte
@@ -76,14 +73,14 @@ def bubblesortArq(): #Bubble Sort feito de 2 em 2 variaveis para não alocar lis
 def mostrarArq():
     try:
         with open("colecao.bin", 'rb') as arq:
-            byte = struct.calcsize('<i')
+            byte = struct.calcsize('=i')
             arq.seek(0,2)
             totalArq = arq.tell()
             contaByte = byte
             arq.seek(0)
             print("Ordenação do arquivo fisico")
             while contaByte <= totalArq:
-                print(arq.read(byte)[0],end=" ")
+                print(struct.unpack("=i",arq.read(byte))[0],end=" ")
                 contaByte += byte
     except IOError:
         print("Erro arquivo - Leitura")
